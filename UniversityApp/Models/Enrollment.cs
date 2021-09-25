@@ -23,6 +23,7 @@ namespace UniversityApp.Models
         public int StudentID { get; set; }
 
         [Display(Name = "Grade")]
+        [DisplayFormat(NullDisplayText = "No grade")]
         public Grade? Grade { get; set; }
 
         [Display(Name = "Course")]

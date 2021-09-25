@@ -46,19 +46,12 @@ namespace UniversityApp.Data
             new Course{CourseID=2042,Title="Literature",Credits=4}
             };
 
-            //context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Course OFF;");
-
+            
             foreach (Course c in courses)
             {
                 context.Courses.Add(c);
             }
-
-            //setting identity insert off temporarily
-            
             context.SaveChanges();
-
-            //context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Course ON;");
-            //context.SaveChanges();
 
             var enrollments = new Enrollment[]
             {

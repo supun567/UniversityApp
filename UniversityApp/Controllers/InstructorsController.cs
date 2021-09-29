@@ -78,9 +78,10 @@ namespace UniversityApp.Controllers
         {
             var instructor = new Instructor();
             instructor.CourseAssignments = new List<CourseAssignment>();
-            
+            PopulateAssignedCourseData(instructor);
             return View();
         }
+
 
         // POST: Instructors/Create
         [HttpPost]
@@ -102,7 +103,7 @@ namespace UniversityApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            
+            PopulateAssignedCourseData(instructor);
             return View(instructor);
         }
 
@@ -123,11 +124,28 @@ namespace UniversityApp.Controllers
             {
                 return NotFound();
             }
-           
+            PopulateAssignedCourseData(instructor);
             return View(instructor);
         }
 
-        
+        private void PopulateAssignedCourseData(Instructor instructor)
+        {
+            var allCourses = _context.Courses;
+            var instructorCourses = new HashSet<int>(instructor.CourseAssignments.Select(c => c.CourseID));
+            var viewModel = new List<AssignedCourseData>();
+            foreach (var course in allCourses)
+            {
+                viewModel.Add(new AssignedCourseData
+                {
+                    CourseID = course.CourseID,
+                    Title = course.Title,
+                    Assigned = instructorCourses.Contains(course.CourseID)
+                });
+            }
+            ViewData["Courses"] = viewModel;
+        }
+
+
 
         // POST: Instructors/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -172,9 +190,10 @@ namespace UniversityApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             UpdateInstructorCourses(selectedCourses, instructorToUpdate);
-            
+            PopulateAssignedCourseData(instructorToUpdate);
             return View(instructorToUpdate);
         }
+
 
         private void UpdateInstructorCourses(string[] selectedCourses, Instructor instructorToUpdate)
         {
